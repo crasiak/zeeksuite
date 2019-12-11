@@ -1,0 +1,102 @@
+---
+
+# Install pfring from source.
+#
+# *** these tasks are not used by default (install from pkg) ***
+#
+# If you need to roll your own PF_RING, this can help.
+#
+#
+#
+- name: stat libpfring.so
+  stat:
+    path: '{{ pfring_dir }}/lib/libpfring.so'
+  register: sharedobject_exists
+
+- name: Ensure directory exists
+  file:
+    path: "{{ pfring_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Get PF_RING source
+  git:
+    repo: "{{ pfring_repo_url }}"
+    dest: "{{ pfring_dir }}"
+    update: false
+    version: "{{ pfring_version }}"
+  become: true
+
+- name: Make PF_RING/kernel
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ pfring_dir }}/kernel'
+  with_items:
+    - 'make'
+    - 'insmod ./pf_ring.ko'
+  become: true
+  ignore_errors: true
+  when: not sharedobject_exists.stat.exists
+
+- name: Make PF_RING/userland
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ pfring_dir }}/userland'
+  with_items:
+    - 'make'
+  become: true
+  when: not sharedobject_exists.stat.exists
+
+- name: Make PF_RING/userland/lib
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ pfring_dir }}/userland/lib'
+  become: true
+  with_items:
+    - './configure --prefix={{ pfring_dir }}'
+    - 'make install'
+  when: not sharedobject_exists.stat.exists
+
+- name: Make PF_RING/userland/libpcap
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ pfring_dir }}/userland/libpcap'
+  become: true
+  with_items:
+    - './configure --prefix={{ pfring_dir }}'
+    - 'make install'
+  when: not sharedobject_exists.stat.exists
+
+- name: stat tcpdump
+  stat:
+    path: '{{ pfring_dir }}/sbin/tcpdump'
+  register: tcpdump_exists
+
+- name: Make PF_RING/userland/tcpdump
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ pfring_dir }}/userland/tcpdump'
+  become: true
+  with_items:
+    - './configure --prefix={{ pfring_dir }}'
+    - 'make install'
+  when: not tcpdump_exists
+
+- name: Make PF_RING/kernel
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ pfring_dir }}/kernel'
+  become: true
+  with_items:
+    - 'make'
+    - 'make install'
+  ignore_errors: true
+  when: not sharedobject_exists.stat.exists
+
+- name: Add pf_ring on boot
+  become: true
+  lineinfile:
+    path: '/etc/modules'
+    line: 'pf_ring'
+    create: true

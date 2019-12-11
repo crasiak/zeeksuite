@@ -1,0 +1,65 @@
+---
+
+- name: ensure zkg directory
+  become: true
+  file:
+    state: directory
+    path: /home/zeek/.zkg
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+
+- name: install zeek package manager
+  become: true
+  pip:
+    name: zkg
+    state: present
+
+- name: stat zkg config
+  stat:
+    path: /home/zeek/.zkg/config
+  register: zeek_cfg
+
+- name: add zkg config file
+  become: true
+  file:
+    state: directory
+    path: /home/zeek/.zkg
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+    recurse: true
+
+- name: add zkg config file
+  become: true
+  template:
+    src: zkg_config.j2
+    dest: /home/zeek/.zkg/config
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+
+- name: add load packages directive to local.zeek
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/share/zeek/site/local.zeek'
+    line: '{{ item }}'
+  with_items:
+    - '# load zeek packages'
+    - '@load packages'
+
+- name: stop zeek
+  shell: '{{ zeek_base }}/bin/zeekctl stop'
+  become: true
+  become_user: '{{ zeek_user }}'
+  when: zeek_cfg.stat.exists
+
+- name: install packages
+  shell: '{{ zeek_base }}/bin/zeekctl install --force {{ item }}'
+  become: true
+  become_user: '{{ zeek_user }}'
+  with_items: ['{{ zkg_install_packages }}']
+  when: zeek_cfg.stat.exists
+
+- name: run zeek deploy
+  shell: '{{ zeek_base }}/bin/zeekctl deploy'
+  become: true
+  become_user: '{{ zeek_user }}'
+  when: zeek_cfg.stat.exists

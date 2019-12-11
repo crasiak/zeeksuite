@@ -1,0 +1,8 @@
+
+# List of local networks in CIDR notation, optionally followed by a
+# descriptive tag.
+# For example, "10.0.0.0/8" or "fe80::/64" are valid prefixes.
+
+{% for cidr in zeek_cidrs %}
+{{ cidr }}
+{% endfor %}

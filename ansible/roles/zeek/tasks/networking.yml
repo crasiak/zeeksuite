@@ -1,0 +1,29 @@
+---
+
+#- name: add mirror port
+#  become: true
+#  template:
+#    src: netplan_iface.yaml
+#    dest: '/etc/netplan/30-zeek-{{ zeek_interface }}.yaml'
+#
+#- name: restart networking
+#  become: true
+#  systemd:
+#    name: systemd-networkd.service
+#    daemon_reload: true
+#    state: restarted
+#    enabled: true
+
+- name: 'set {{ zeek_interface }} promisuous on boot via systemd'
+  become: true
+  template:
+    src: promiscuous_nic.service.j2
+    dest: /etc/systemd/system/promiscuous_nic.service
+
+- name: ensure promiscuous mode is enabled
+  become: true
+  systemd:
+    name: promiscuous_nic.service
+    daemon_reload: true
+    state: started
+    enabled: true

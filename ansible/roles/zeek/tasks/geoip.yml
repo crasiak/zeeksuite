@@ -1,0 +1,30 @@
+---
+# install GeoIP
+- name: Stat GeoIP DB
+  stat:
+    path: '/usr/share/GeoIP/GeoLite2-City.mmdb'
+  register: geoip_db
+
+- name: Install libmaxminddb
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - libmaxminddb-dev
+  become: true
+  when: not geoip_db.stat.exists
+
+- name: ensure GeoIP dir
+  file:
+    path: '/usr/share/GeoIP/'
+    state: directory
+  when: not geoip_db.stat.exists
+
+- name: Download and extract GeoIP database
+  unarchive:
+    src: '{{ zeek_geoip_db_url }}'
+    dest: '/usr/share/GeoIP/'
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+  become: true
+  when: not geoip_db.stat.exists

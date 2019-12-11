@@ -1,0 +1,82 @@
+---
+# compile from source, test
+- name: Ensure base exists
+  become: true
+  file:
+    state: directory
+    path: '{{ zeek_base | dirname }}'
+    mode: 0755
+
+- name: Stat Zeek
+  stat:
+    path: '{{ zeek_base }}/bin/zeek'
+  register: zeek_bin
+
+- name: Download Zeek Source
+  become: true
+  git:
+    recursive: yes
+    repo: '{{ zeek_src_repo }}'
+    dest: '{{ zeek_base }}'
+    version: '{{ zeek_repo_branch }}'
+  when: not zeek_bin.stat.exists
+
+- name: Debug msg
+  debug:
+    msg: 'WARNING - Compiling Zeek from source can take up to 30mins'
+  when: not zeek_bin.stat.exists
+
+- name: Compile Zeek from source
+  become: true
+  shell: '{{ item }}'
+  args:
+    chdir: '{{ zeek_base }}'
+  # --with-pcap={{ pf_ring_dir }}
+  with_items:
+    - './configure --prefix={{ zeek_base }}'
+    - 'make'
+    - 'make install'
+  when: not zeek_bin.stat.exists
+
+- name: Set Zeek base dir perms
+  become: true
+  file:
+    path: '{{ zeek_base }}'
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+    recurse: yes
+
+- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/zeek'
+  become: true
+  capabilities:
+    path: '{{ zeek_base }}/bin/zeek'
+    capability: '{{ item }}'
+    state: present
+  with_items:
+    - 'cap_net_raw+eip'
+    - 'cap_net_admin+eip'
+  when: zeek_bin.stat.exists
+
+- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/capstats'
+  become: true
+  capabilities:
+    path: '{{ zeek_base }}/bin/capstats'
+    capability: '{{ item }}'
+    state: present
+  with_items:
+    - 'cap_net_raw+eip'
+    - 'cap_net_admin+eip'
+  when: zeek_bin.stat.exists
+
+- name: verify GeoIP in Zeek
+  become: true
+  shell: './zeek -e "print lookup_location(8.8.8.8);"'
+  args:
+    chdir: '{{ zeek_base }}/bin'
+  when: ansible_distribution == 'Ubuntu'
+
+- name: add Zeek to system-wide $PATH
+  become: true
+  copy:
+    dest: /etc/profile.d/zeek-path.sh
+    content: 'PATH=$PATH:{{ zeek_base }}/bin'

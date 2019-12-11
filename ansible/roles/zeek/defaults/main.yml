@@ -1,0 +1,84 @@
+---
+# defaults file for zeek
+
+# track the version of entire suite
+#
+zeeksuite_version: 0.0.2
+
+
+# Install zeek here
+#
+zeek_base: /opt/zeek
+
+# download zeek source code from this url
+#
+zeek_src_repo: https://github.com/zeek/zeek
+
+# set the branch to build from
+#
+# latest stable version as of time of writing: 'release/3.0'
+zeek_repo_branch: release/3.0
+
+# use this user to chown the installed source
+#
+zeek_user: zeek
+
+# Zeek can use GeoIP data
+zeek_geoip: true
+zeek_geoip_db_url: http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
+
+# This interface will be created and used by Zeek.
+#
+zeek_interface: enp0s3
+
+# cidrs used in the networks.cfg zeek configuration file
+#
+zeek_cidrs:
+  - 192.168.1.0/24
+  - 10.0.2.0/24
+
+# ansible will copy and install zeek custom scripts
+#
+zeek_custom_scripts:
+  - scripts/smb_psexec.zeek
+
+# add/remove additional packages here
+#
+zkg_install_packages: [
+  'zeek/j-gras/bro-af_packet-plugin',
+  'zeek/salesforce/ja3',
+  'zeek/salesforce/hassh',
+]
+
+# send mail to
+#
+zeek_mail_to: mail@mailto.com
+
+# set the timezone of the VM
+#
+timezone: US/Pacific
+
+# run with the a basic configuration
+#
+zeek_standalone: true
+
+
+# options used by PF_RING
+#
+enable_pfring: false
+
+# install from package
+#
+
+# number of processes used by PF_RING
+#
+pf_procs: 1
+
+# customize PF_RING source URL here
+#
+pfring_repo_url: https://github.com/ntop/PF_RING.git
+
+
+# The branch to check out
+#
+pfring_version: 7.4.0-stable

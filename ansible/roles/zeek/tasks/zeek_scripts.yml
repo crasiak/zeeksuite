@@ -1,0 +1,58 @@
+---
+# Zeek scripts
+
+- name: Enable Zeek file extraction
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/share/zeek/site/local.zeek'
+    line: '{{ item }}'
+  with_items:
+    - '# Zeek file extraction'
+    - '@load policy/frameworks/files/extract-all-files.zeek'
+  # when not in file
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Enable Zeek stats
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/share/zeek/site/local.zeek'
+    line: '{{ item }}'
+  with_items:
+    - '# Zeek stats'
+    - '@load policy/misc/stats.zeek'
+  when: ansible_distribution == 'Ubuntu'
+
+- name: ensure scripts directory
+  become: true
+  file:
+    state: directory
+    path: '{{ zeek_base }}/share/zeek/scripts'
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+    mode: 0755
+
+- name: Copy custom Zeek scripts
+  become: true
+  template:
+    src: "{{ item }}"
+    dest: '{{ zeek_base }}/share/zeek/scripts/{{ item | basename }}'
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+  with_fileglob: '{{ zeek_custom_scripts }}'
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Add comment for custom scripts
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/share/zeek/site/local.zeek'
+    line: '# Zeek custom scripts'
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Enable Zeek scripts
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/share/zeek/site/local.zeek'
+    line: '@load scripts/{{ item | basename }}'
+  with_fileglob:
+    - '{{ zeek_base }}/share/zeek/scripts/*'
+  when: ansible_distribution == 'Ubuntu'

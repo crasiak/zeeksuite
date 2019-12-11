@@ -1,0 +1,76 @@
+# Example BroControl node configuration.
+#
+# This example has a standalone node ready to go except for possibly changing
+# the sniffing interface.
+
+# This is a complete standalone configuration.  Most likely you will
+# only need to change the interface.
+
+## Below is an example clustered configuration. If you use this,
+## remove the [bro] node above.
+{% if zeek_standalone %}
+
+[zeek]
+type=standalone
+host=localhost
+interface={{ zeek_interface }}
+
+{% elif enable_pfring %}
+[logger]
+type=logger
+host=localhost
+
+[manager]
+type=manager
+host=localhost
+
+[proxy-1]
+type=proxy
+host=localhost
+
+[worker-1]
+type=worker
+host=localhost
+interface={{ zeek_interface }}
+lb_method=pf_ring 
+lb_procs={{ pf_procs }}
+
+[worker-2]
+type=worker
+host=localhost
+interface=eth0
+interface={{ zeek_interface }}
+lb_method=pf_ring 
+lb_procs={{ pf_procs }}
+
+{% else %}
+
+[logger]
+type=logger
+host=localhost
+
+[manager]
+type=manager
+host=localhost
+
+[proxy-1]
+type=proxy
+host=localhost
+
+[worker-1]
+type=worker
+host=localhost
+interface=af_packet::{{ zeek_interface }}
+lb_method=custom
+lb_procs=2
+pin_cpus=0,1
+
+[worker-2]
+type=worker
+host=localhost
+interface=af_packet::{{ zeek_interface }}
+lb_method=custom
+lb_procs=2
+pin_cpus=0,1
+
+{% endif %}

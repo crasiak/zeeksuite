@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
+  config.ssh.password = "vagrant"
+  config.vm.synced_folder '.', '/vagrant', type: 'nfs'
+
+  config.vm.define "virtualbox" do |virtualbox|
+
+    virtualbox.vm.hostname = "ubuntu"
+    virtualbox.vm.box = "ubuntu-18.04-virtualbox.box"
+    # nic management in ansible
+    # virtualbox.vm.network :private_network, ip: "192.168.0.99"
+
+    config.vm.provider :virtualbox do |v|
+      v.gui = false
+      v.memory = 8192
+      v.cpus = 2
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--ioapic", "on"]
+    end
+
+  end
+
+end

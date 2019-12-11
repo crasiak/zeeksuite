@@ -1,0 +1,12 @@
+---
+
+- name: install PF_RING deb file
+  apt:
+    deb: http://apt-stable.ntop.org/18.04/all/apt-ntop-stable.deb
+
+- name: Ensure directory exists
+  file:
+    path: "{{ pfring_dir }}"
+    state: directory
+    mode: '0755'
+  become: true

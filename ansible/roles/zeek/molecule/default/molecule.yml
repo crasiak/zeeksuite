@@ -1,0 +1,33 @@
+---
+dependency:
+  name: galaxy
+#driver:
+#  name: docker
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+lint:
+  name: yamllint
+platforms:
+  - name: molecule-2
+    box: ubuntu/bionic64
+    cpus: 2
+    memory: 4096
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: dhcp
+#- name: instance
+#
+#  image: ubuntu:18.04
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+    options:
+      x: [ANSIBLE0013]
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

@@ -1,0 +1,72 @@
+---
+
+- name: Update APT package cache
+  apt: update_cache=yes cache_valid_time=600
+  become: true
+
+- name: run dist-upgrade
+  become: true
+  apt: upgrade=dist
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Set time to {{ timezone }}
+  become: true
+  timezone:
+    name: '{{ timezone }}'
+
+- name: Install dependencies
+  apt:
+    name:
+      - xz-utils
+      - cmake
+      - clang
+      - make
+      - doxygen
+      - gcc
+      - 'g++'
+      - sendmail
+      - gdb
+      - git
+      - librocksdb-dev
+      - libreadline-dev
+      - software-properties-common
+      - flex
+      - bison
+      - libpcap-dev
+      - libssl-dev
+      - python-dev
+      - python-pip
+      - swig
+      - zlib1g-dev
+    state: present
+    update_cache: true
+  become: true
+
+# create zeek user & set permissions
+- name: Create Zeek user
+  become: true
+  user:
+    name: '{{ zeek_user }}'
+    shell: /usr/bin/false
+    home: '/home/zeek'
+
+- include: "networking.yml"
+- include: "geoip.yml"
+- include: "install_src.yml"
+- include: "pfring.yml"
+  when: enable_pfring
+
+- include: "configure_zeek.yml"
+- include: "zeek_scripts.yml"
+- include: "zeek_packages.yml"
+
+# deploy Zeek
+- name: run zeek deploy
+  shell: '{{ zeek_base }}/bin/zeekctl {{ item }}'
+  become: true
+  with_items:
+    - 'install'
+    - 'deploy'
+    - 'status'
+  # nb: zeek_bin from tasks/install_src.yml
+  when: zeek_bin.stat.exists

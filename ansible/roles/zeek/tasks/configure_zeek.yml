@@ -1,0 +1,44 @@
+---
+
+# Configure Zeek
+- name: copy zeek networks config
+  become: true
+  template:
+    src: networks.cfg.j2
+    dest: '{{ zeek_base }}/etc/networks.cfg'
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+
+- name: copy zeek node config
+  become: true
+  template:
+    src: node.cfg.j2
+    dest: '{{ zeek_base }}/etc/node.cfg'
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+
+- name: Replace Zeek e-mail
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/etc/zeekctl.cfg'
+    regexp: '^MailTo ='
+    line: 'MailTo = {{ zeek_mail_to }}'
+
+- name: Enable Bro logging in JSON format
+  become: true
+  lineinfile:
+    path: '{{ zeek_base }}/share/zeek/site/local.zeek'
+    line: '{{ item }}'
+  with_items:
+    - '# Enable Zeek logging in JSON format'
+    - 'redef LogAscii::json_timestamps = JSON::TS_ISO8601;'
+    - 'redef LogAscii::use_json = T;'
+  # TODO: when not already enabled
+
+- name: Create scripts directory for custom Zeek scripts
+  become: true
+  file:
+    path: '{{ zeek_base }}/share/zeekctl/scripts'
+    state: directory
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
