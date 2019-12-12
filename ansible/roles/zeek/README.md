@@ -59,6 +59,17 @@ $ cat playbook.yml
 $ ansible-playbook -vvv playbook.yml
 ```
 
+#### Next Steps
+
+ Probably stating what's already in Issues.
+
+I want to add the following features and tackle remaining low-hanging fruit from
+my original to-do list eg: finish integration and testing pf_ring [#10](https://github.com/crasiak/zeeksuite/issues/9) add 
+options like installing zeek from a package [#7](https://github.com/crasiak/zeeksuite/issues/7) or finish setting port mirroring. 
+
+Features and bugs are being tracked in Issues.
+
+
 ### Licensing
 
 This repo and it's contents are free (as in beer) under the Apache-2.0 license.

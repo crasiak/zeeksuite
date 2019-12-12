@@ -110,7 +110,7 @@ virtualbox.vm.box = "ubuntu1804-virtualbox.box"
 Ansible can be installed with pip.  If you're on a fresh system, pip can be
 installed with `easy_install pip` (which assumes you have python installed).
 ```
-pip3 install --user ansible
+pip3 install --user ansible molecule
 ```
 
 If you already have an Ubuntu 18.04 image you want to use, you can add Zeek
@@ -121,7 +121,7 @@ cd ansible
 ansbile-playbook playbook.yml
 ```
 
-##### molecule
+##### Molecule
 
 The zeek role was built with molecule. The configuration has been updated to use
 VirualBox. Rudimentary [Testinfra](https://testinfra.readthedocs.io/en/latest/) tests have been included but could 
@@ -131,6 +131,12 @@ stand to be expanded.
 
 See role's [README.md](ansible/roles/zeek/README.md) for a full breakdown of customizing variables 
 currently available
+
+#### Next Steps
+
+Next up: tackle remaining low-hanging fruit. eg: testing pf_ring [#9](https://github.com/crasiak/zeeksuite/issues/9)
+add options like installing zeek from a package [#7](https://github.com/crasiak/zeeksuite/issues/7) or finish setting
+port mirroring. Features and bugs are being tracked in Issues.
 
 #### Licensing
 
@@ -142,4 +148,3 @@ Please see LICENSE for more information
 Created by Jonathan Stasiak jw@crasiak.net, sponsored by [Corelight](http://corelight.com)
 
 Pull requests welcome!
-
