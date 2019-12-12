@@ -12,7 +12,7 @@ zeek_base: /opt/zeek
 
 # download zeek source code from this url
 #
-zeek_src_repo: https://github.com/zeek/zeek
+zeek_repo_url: https://github.com/zeek/zeek
 
 # set the branch to build from
 #

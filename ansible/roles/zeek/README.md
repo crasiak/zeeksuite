@@ -14,7 +14,7 @@ The following variables can be changed to *customize* your Zeek install.
 `zeek_base` - The directory you want to install zeek into. It is set to default
 to `/opt/zeek`
 
-`zeek_src_repo` - The repository to install zeek from. It defaults to https://github.com/zeek/zeek
+`zeek_repo_url` - The repository to install zeek from. It defaults to https://github.com/zeek/zeek
 
 `zeek_repo_branch` Use this variable to set the branch to clone. Default 'release/3.0'
 

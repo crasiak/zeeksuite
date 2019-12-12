@@ -16,7 +16,7 @@
   become: true
   git:
     recursive: yes
-    repo: '{{ zeek_src_repo }}'
+    repo: '{{ zeek_repo_url }}'
     dest: '{{ zeek_base }}'
     version: '{{ zeek_repo_branch }}'
   when: not zeek_bin.stat.exists
