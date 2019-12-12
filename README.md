@@ -8,7 +8,7 @@ Make sure you have [VirtualBox](https://virtualbox.org), [Packer](https://packer
 the install section below for more info.
 
   ```
-  curl -fsSL https://crasiak.github.io/zeeksuite_installer/install.sh | /bin/bash
+  curl -fsSL https://git.io/JeHEk | /bin/bash
   ```
 
 `build.sh` can be run again if the build fails:
