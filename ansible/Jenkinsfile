@@ -1,0 +1,32 @@
+pipeline {
+  // agent {
+  //   docker {
+  //     image ''
+  //   }
+  // }
+  // environment { 
+  //       CC = 'clang'
+  // }
+  // triggers {
+  //     // https://jenkins.io/doc/book/pipeline/syntax/#agent 
+  //     cron('H */4 * * 1-5')
+  // }
+  agent any
+  options {
+      timeout(time: 10, unit: 'MINUTES') 
+  }
+  stages {
+    stage('build') {
+      steps {
+        echo ''
+        sh 'packer build ubuntu.json'
+      }
+    }
+    stage('archive creating box file') {
+      steps {
+        echo ''
+
+      }
+    }
+  }
+}

@@ -1,40 +1,63 @@
 ---
 
+- name: ensure pip is installed
+  apt:
+    name: python-pip
+    state: present
+
+- name: Set .zkg perms
+  become: true
+  file:
+    path: '/home/{{ zeek_user }}/.zkg'
+    owner: '{{ zeek_user }}'
+    group: '{{ zeek_user }}'
+    recurse: true
+
 - name: ensure zkg directory
   become: true
   file:
     state: directory
-    path: /home/zeek/.zkg
+    path:  '{{ item }}'
     owner: '{{ zeek_user }}'
     group: '{{ zeek_user }}'
+  with_items:
+    - /home/zeek/.zkg
 
 - name: install zeek package manager
   become: true
   pip:
     name: zkg
     state: present
+    executable: /usr/bin/pip
 
-- name: stat zkg config
-  stat:
-    path: /home/zeek/.zkg/config
-  register: zeek_cfg
+#- name: stat zkg config
+  #stat:
+    #path: /home/zeek/.zkg/config
+  #register: zkg_cfg
 
-- name: add zkg config file
-  become: true
-  file:
-    state: directory
-    path: /home/zeek/.zkg
-    owner: '{{ zeek_user }}'
-    group: '{{ zeek_user }}'
-    recurse: true
+#- name: create zkg config file
+  #become: true
+  #become_user: '{{ zeek_user }}'
+  #become_flags: '-i'
+  #become_method: 'sudo'
+  #shell: zkg autoconfig
 
-- name: add zkg config file
+- name: drop zkg config
   become: true
   template:
     src: zkg_config.j2
-    dest: /home/zeek/.zkg/config
-    owner: '{{ zeek_user }}'
-    group: '{{ zeek_user }}'
+    dest: '/home/{{ zeek_user }}/.zkg/config'
+    force: true
+    trim_blocks: false
+
+- name: dump config
+  shell: cat /home/zeek/.zkg/config
+  register: cfg
+
+- name: 'zkg config'
+  debug: 
+    var: cfg
+    verbosity: 3
 
 - name: add load packages directive to local.zeek
   become: true
@@ -45,21 +68,28 @@
     - '# load zeek packages'
     - '@load packages'
 
+- include: "setcaps.yml"
+
 - name: stop zeek
   shell: '{{ zeek_base }}/bin/zeekctl stop'
   become: true
   become_user: '{{ zeek_user }}'
-  when: zeek_cfg.stat.exists
+  become_flags: '-i'
 
 - name: install packages
-  shell: '{{ zeek_base }}/bin/zeekctl install --force {{ item }}'
+  shell: 'zkg install --force {{ item }}'
   become: true
+  become_flags: '-i'
   become_user: '{{ zeek_user }}'
-  with_items: ['{{ zkg_install_packages }}']
-  when: zeek_cfg.stat.exists
+  with_items: '{{ zkg_install_packages }}'
 
-- name: run zeek deploy
-  shell: '{{ zeek_base }}/bin/zeekctl deploy'
+- include: "setcaps.yml"
+
+- name: run zeek deploy & status
   become: true
+  become_flags: '-i'
   become_user: '{{ zeek_user }}'
-  when: zeek_cfg.stat.exists
+  shell: '{{ zeek_base }}/bin/zeekctl {{ item }}'
+  with_items:
+    - 'deploy'
+    - 'status'

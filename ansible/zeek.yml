@@ -1,7 +1,9 @@
 ---
 
-- hosts: localhost
-  gather_facts: yes
+- hosts: 127.0.0.1
+  gather_facts: true
   name: Setup Zeek in a VM
+  #become: true
+  #become_flags: '-i'
   roles:
     - {role: 'zeek'}

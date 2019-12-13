@@ -1,0 +1,30 @@
+---
+
+#sudo sh -c "echo 'deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_18.04/ /' > /etc/apt/sources.list.d/security:zeek.list"
+#kwget -nv https://download.opensuse.org/repositories/security:zeek/xUbuntu_18.04/Release.key -O Release.key
+#sudo apt-key add - < Release.key
+#sudo apt-get update
+#sudo apt-get install zeek
+
+#- name: 'add repo'
+#  become: true
+#  apt_repository:
+#    repo: deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_18.04/ /
+#    state: present
+#
+#- name: try to load key from xubuntu mirror
+#  become: true
+#  apt_key:
+#    url: https://download.opensuse.org/repositories/security:zeek/xUbuntu_18.04/Release.key
+#    state: present
+
+#- name: Update APT package cache
+#  apt: update_cache=yes cache_valid_time=600
+#  become: true
+
+
+- name: Install zeek bin
+  apt:
+    deb: https://download.opensuse.org/repositories/security:/zeek/xUbuntu_18.04/amd64/zeek_3.0.1-0_amd64.deb
+    state: present
+  become: true
