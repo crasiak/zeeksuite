@@ -32,6 +32,36 @@ Work interactively with zeek (as zeek user)
 ```
 NB: -i, --login tells sudo to run as login shell.
 
+Start zeek
+```
+  $ zeekctl
+[ZeekControl] > deploy
+stopping workers ...
+creating crash report for previously crashed nodes: worker-1-1, worker-1-2, worker-2-1, worker-2-2
+stopping proxy ...
+creating crash report for previously crashed nodes: proxy-1
+stopping manager ...
+creating crash report for previously crashed nodes: manager
+stopping logger ...
+creating crash report for previously crashed nodes: logger
+starting ...
+starting logger ...
+starting manager ...
+starting proxy ...
+starting workers ...
+[ZeekControl] > status
+Name         Type    Host             Status    Pid    Started
+logger       logger  localhost        running   3186   16 Dec 13:00:04
+manager      manager localhost        running   3233   16 Dec 13:00:05
+proxy-1      proxy   localhost        running   3279   16 Dec 13:00:07
+worker-1-1   worker  localhost        running   3372   16 Dec 13:00:08
+worker-1-2   worker  localhost        running   3371   16 Dec 13:00:08
+worker-2-1   worker  localhost        running   3373   16 Dec 13:00:08
+worker-2-2   worker  localhost        running   3370   16 Dec 13:00:08
+[ZeekControl] > exit
+```
+NB: output from deploying Zeek and starting in cluster mode
+
 ### Overview
 
 zeeksuite is a collection of tools to help you get started or maintain an existing
