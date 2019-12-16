@@ -1,0 +1,23 @@
+{
+  "builds": [
+    {
+      "name": "virtualbox-iso",
+      "builder_type": "virtualbox-iso",
+      "build_time": 1576466048,
+      "files": [
+        {
+          "name": "output-virtualbox-iso/zeek-ubuntu1804-disk001.vmdk",
+          "size": 3006342144
+        },
+        {
+          "name": "output-virtualbox-iso/zeek-ubuntu1804.ovf",
+          "size": 6035
+        }
+      ],
+      "artifact_id": "VM",
+      "packer_run_uuid": "534a0a29-cdd5-d1eb-a51f-83e398c4a04d",
+      "custom_data": null
+    }
+  ],
+  "last_run_uuid": "534a0a29-cdd5-d1eb-a51f-83e398c4a04d"
+}

@@ -1,7 +1,11 @@
+# this file was generated. edits will be lost
+#
+
+[sources]
 zeek = https://github.com/zeek/packages
 
 [paths]
-state_dir = /home/zeek/.zkg
+state_dir = /home/{{ zeek_user }}/.zkg
 script_dir = {{ zeek_base }}/share/zeek/site
 plugin_dir = {{ zeek_base }}/lib/zeek/plugins
 zeek_dist = {{ zeek_base }}

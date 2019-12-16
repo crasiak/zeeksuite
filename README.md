@@ -24,8 +24,13 @@ bin/build.sh
 Login to your new VM
 ```
 vagrant ssh
-# password: vagrant
 ```
+
+Work interactively with zeek (as zeek user)
+```
+sudo -u zeek -i 
+```
+NB: -i, --login tells sudo to run as login shell.
 
 ### Overview
 
@@ -129,8 +134,7 @@ stand to be expanded.
 
 #### Customizing
 
-See role's [README.md](ansible/roles/zeek/README.md) for a full breakdown of customizing variables 
-currently available
+See role's [README.md](ansible/roles/zeek/README.md) for a full breakdown of variables currently available
 
 #### Next Steps
 

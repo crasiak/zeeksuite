@@ -1,0 +1,44 @@
+---
+
+- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/zeek'
+  become: true
+  capabilities:
+    path: '{{ zeek_base }}/bin/zeek'
+    capability: '{{ item }}'
+    state: present
+  with_items:
+    - 'cap_net_raw+eip'
+    - 'cap_net_admin+eip'
+
+- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/zeek'
+  become: true
+  capabilities:
+    path: '{{ zeek_base }}/bin/zeek'
+    capability: '{{ item }}'
+    state: present
+  with_items:
+    - 'cap_net_raw+eip'
+    - 'cap_net_admin+eip'
+  #when: zeek_bin.stat.exists
+
+- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/capstats'
+  become: true
+  capabilities:
+    path: '{{ zeek_base }}/bin/capstats'
+    capability: '{{ item }}'
+    state: present
+  with_items:
+    - 'cap_net_raw+eip'
+    - 'cap_net_admin+eip'
+  #when: zeek_bin.stat.exists
+
+- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/capstats'
+  become: true
+  capabilities:
+    path: '{{ zeek_base }}/bin/capstats'
+    capability: '{{ item }}'
+    state: present
+  with_items:
+    - 'cap_net_raw+eip'
+    - 'cap_net_admin+eip'
+  #when: zeek_bin.stat.exists

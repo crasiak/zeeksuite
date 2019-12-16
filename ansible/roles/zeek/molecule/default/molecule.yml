@@ -1,7 +1,7 @@
 ---
 dependency:
   name: galaxy
-#driver:
+# driver:
 #  name: docker
 driver:
   name: vagrant
@@ -10,23 +10,31 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: molecule-2
+  - name: ubuntu1804-zeek-role-tester
     box: ubuntu/bionic64
-    cpus: 2
-    memory: 4096
+    cpus: 4
+    memory: 8192
     interfaces:
       - auto_config: true
         network_name: private_network
         type: dhcp
-#- name: instance
-#
-#  image: ubuntu:18.04
 provisioner:
   name: ansible
+  log: True
+  #options:
+    #v: True
+    #vvv: True
+  #privilege_escalation:
+  #  become_flags: "-i"
+  #config_options:
+    #defaults:
+    #  roles_path:
+    #  library:
+    #  filter_plugins:
   lint:
     name: ansible-lint
     options:
-      x: [ANSIBLE0013]
+      x: [ANSIBLE0012, ANSIBLE0013]
 verifier:
   name: testinfra
   lint:

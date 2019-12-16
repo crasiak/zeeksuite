@@ -1,5 +1,4 @@
 ---
-# compile from source, test
 - name: Ensure base exists
   become: true
   file:
@@ -31,12 +30,11 @@
   shell: '{{ item }}'
   args:
     chdir: '{{ zeek_base }}'
-  # --with-pcap={{ pf_ring_dir }}
   with_items:
     - './configure --prefix={{ zeek_base }}'
-    - 'make'
-    - 'make install'
-  when: not zeek_bin.stat.exists
+    - 'make -j4'
+    - 'make -j4 install'
+  when: not enable_pfring and not zeek_bin.stat.exists
 
 - name: Set Zeek base dir perms
   become: true
@@ -46,27 +44,7 @@
     group: '{{ zeek_user }}'
     recurse: yes
 
-- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/zeek'
-  become: true
-  capabilities:
-    path: '{{ zeek_base }}/bin/zeek'
-    capability: '{{ item }}'
-    state: present
-  with_items:
-    - 'cap_net_raw+eip'
-    - 'cap_net_admin+eip'
-  when: zeek_bin.stat.exists
-
-- name: 'setcap cap_net_raw,cap_net_admin=eip {{ zeek_base }}/bin/capstats'
-  become: true
-  capabilities:
-    path: '{{ zeek_base }}/bin/capstats'
-    capability: '{{ item }}'
-    state: present
-  with_items:
-    - 'cap_net_raw+eip'
-    - 'cap_net_admin+eip'
-  when: zeek_bin.stat.exists
+- include: "setcaps.yml"
 
 - name: verify GeoIP in Zeek
   become: true
