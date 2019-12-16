@@ -13,33 +13,33 @@ the install section below for more info.
 
 `build.sh` can be run again if the build fails:
 ```
-bin/build.sh
+  bin/build.sh
 ```
 
 `run.sh` attempts to load the box and runs it.
 ```
-bin/build.sh
+  bin/build.sh
 ```
 
 Login to your new VM
 ```
-vagrant ssh
+  vagrant ssh
 ```
 
 Work interactively with zeek (as zeek user)
 ```
-sudo -u zeek -i 
+  sudo -u zeek -i 
 ```
 NB: -i, --login tells sudo to run as login shell.
 
 ### Overview
 
 zeeksuite is a collection of tools to help you get started or maintain an existing
-[Zeek](https://zeek.org) install. This repository contains [Packer](https://packer.io) manifests configured to
+[Zeek](https://zeek.org) install. This repository contains [Packer](https://packer.io) templates configured to
 create an Ubuntu64 18.04 image installed with Zeek running on [VirtualBox](https://virtualbox.org).
 
 Zeek is installed from source with [Ansible](https://ansible.com). The virtual machine the script 
-produces has been configured in standalone mode. cluster mode is optional. 
+produces has been configured in cluster mode. cluster mode is optional. 
 Zeek is configured to listen to the 'eth0' which has been made promiscuous mode 
 for collection. A mirror port setup is in the works.
 
@@ -48,8 +48,8 @@ machine.
 
 #### Zeek
 
-Zeek is installed in `/opt/zeek`. It's currently deployed in standalone mode.
-It's configured with the AF_PACKET, ja3 and hassh packages from zkg. 
+Zeek is installed in `/opt/zeek`. It's currently deployed in cluster mode.
+It's configured with the AF_PACKET and hassh packages from zkg. 
 
 `zkg` is available to install new packages. Add or remove packages from
 `defaults/main.yml` in the zeek role. 
@@ -126,11 +126,13 @@ cd ansible
 ansbile-playbook playbook.yml
 ```
 
-##### Molecule
+##### Testing & Molecule
 
-The zeek role was built with molecule. The configuration has been updated to use
-VirualBox. Rudimentary [Testinfra](https://testinfra.readthedocs.io/en/latest/) tests have been included but could 
-stand to be expanded.
+This has been tested on OSX (Mojave v10.14.6) and Arch Linux (kernel v5.4.2).
+
+The zeek role was built and tested with molecule. The configuration has been
+updated to use VirualBox. Rudimentary [Testinfra](https://testinfra.readthedocs.io/en/latest/) tests have been included 
+but could stand to be expanded.
 
 #### Customizing
 
@@ -138,9 +140,9 @@ See role's [README.md](ansible/roles/zeek/README.md) for a full breakdown of var
 
 #### Next Steps
 
-Next up: tackle remaining low-hanging fruit. eg: testing pf_ring [#9](https://github.com/crasiak/zeeksuite/issues/9)
-add options like installing zeek from a package [#7](https://github.com/crasiak/zeeksuite/issues/7) or finish setting
-port mirroring. Features and bugs are being tracked in Issues.
+Next up: continue to tackle remaining low-hanging fruit: Build images with CI,
+add a second nic to add a capture nic. Validate PF_RING and address bugs are 
+being tracked in Issues.
 
 #### Licensing
 
