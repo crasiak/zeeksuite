@@ -2,6 +2,6 @@
 .vagrant
 packer/packer_cache
 packer/output-virtualbox-iso
-packear/packer-manifest.json
+packer/packer-manifest.json
 
 __pycache__
