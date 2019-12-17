@@ -47,8 +47,7 @@ zeek_custom_scripts:
 #
 zkg_install_packages: [
   'zeek/j-gras/bro-af_packet-plugin',
-  #  TODO: this is causing zeek to not start; removing for now 
-  #  'zeek/salesforce/ja3',
+  'zeek/salesforce/ja3',
   'zeek/salesforce/hassh',
 ]
 
